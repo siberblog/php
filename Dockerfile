@@ -20,16 +20,16 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         && update-ca-certificates --fresh \
         && rm -rf /var/lib/apt/lists/* \
         && printf "\n" | pecl install imagick \
-        && curl -s https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_aarch64.tar.gz | \
+        && curl -s https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz | \
            tar zxf - ioncube/ioncube_loader_lin_7.3.so \
         && mv ioncube/ioncube_loader_lin_7.3.so `php-config --extension-dir` \
         && rm -Rf ioncube \
-        && docker-php-ext-install -j$(nproc) gd \
-        && docker-php-ext-install -j$(nproc) zip \
-        && docker-php-ext-install -j$(nproc) pdo \
-        && docker-php-ext-install -j$(nproc) pgsql \
-        && docker-php-ext-install -j$(nproc) pdo_pgsql \
-        && docker-php-ext-install -j$(nproc) sockets \
+        && docker-php-ext-install -j$(nproc) gd shmop sysvmsg \
+        && docker-php-ext-install -j$(nproc) zip sysvsem sysvshm \
+        && docker-php-ext-install -j$(nproc) pdo pdo_mysql gettext \
+        && docker-php-ext-install -j$(nproc) pgsql pdo_pgsql exif \
+        && docker-php-ext-install -j$(nproc) mysqli calendar \
+        && docker-php-ext-install -j$(nproc) sockets opcache \
         && docker-php-ext-enable imagick ioncube_loader_lin_7.3 \
         && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
         && sed -i '/^upload_max_filesize/s/\([^=]*\).*/\1 = 32M/' "$PHP_INI_DIR/php.ini" \
@@ -40,6 +40,6 @@ RUN mkdir /var/www/scanywhere
 
 EXPOSE 80 443
 
-WORKDIR /var/www/html
+WORKDIR /var/www/scanywhere
 
 #ENTRYPOINT ["/bin/sh", "-c", "/entrypoint.sh"]
