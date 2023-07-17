@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
                 libpq-dev \
                 nano \
                 sudo \
+		cron \
                 iputils-ping \
 		postgresql-client \
 		openssh-client \
